@@ -1,6 +1,8 @@
 import pandas as pd
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from transformers import pipeline
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # Load the sentiment analysis pipeline
 sentiment_pipeline = pipeline("sentiment-analysis")
@@ -49,3 +51,41 @@ print(new_tweets.shape)
 print("average compound sentiment score: " + str(new_score))
 
 # new sentiment score post 2015 is 0.02 lower than previously
+
+#Charts/Figures
+
+# Sentiment score vs retweets
+plt.figure(figsize=(10, 6))
+plt.scatter(trump_tweets['sentiment_score'], trump_tweets['retweets'], alpha=0.6, edgecolor='k')
+plt.title('Sentiment Score vs. Retweets', fontsize=14)
+plt.xlabel('Sentiment Score (Compound)', fontsize=12)
+plt.ylabel('Number of Retweets', fontsize=12)
+plt.grid(True, linestyle='--', alpha=0.6)
+plt.show()
+
+# correlation number
+correlation = trump_tweets['sentiment_score'].corr(trump_tweets['retweets'])
+print(f"Correlation between sentiment score and retweets: {correlation}")
+
+# Density heatmap
+# sns.kdeplot(data=trump_tweets, x='sentiment_score', y='retweets', cmap='Blues', fill=True)
+# plt.title('Density Heatmap of Sentiment Score and Retweets')
+# plt.show()
+
+# Most positive and negative sentiment tweets
+most_positive = trump_tweets.loc[trump_tweets['sentiment_score'].idxmax()]
+most_negative = trump_tweets.loc[trump_tweets['sentiment_score'].idxmin()]
+print("Most Positive Tweet:", most_positive['content'])
+print("Most Negative Tweet:", most_negative['content'])
+
+# calculating abs value to see if sentiment in general correlates to more
+trump_tweets['abs_sentiment_score'] = trump_tweets['sentiment_score'].abs()
+
+# Absolute Sentiment vs. Retweets
+plt.figure(figsize=(8, 6))
+plt.scatter(trump_tweets['abs_sentiment_score'], trump_tweets['retweets'], alpha=0.5)
+plt.title('Absolute Sentiment Score vs. Retweets', fontsize=14)
+plt.xlabel('Absolute Sentiment Score')
+plt.ylabel('Retweets')
+plt.grid(True, linestyle='--', alpha=0.6)
+plt.show()
