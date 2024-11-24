@@ -9,7 +9,16 @@ sentiment_pipeline = pipeline("sentiment-analysis")
 
 analyzer = SentimentIntensityAnalyzer()
 
-trump_tweets = pd.read_csv("final project/trumptweets/realdonaldtrump.csv")
+
+trump_tweets = pd.read_csv("/Users/anjalinuggehalli/Desktop/NLP/NLP_FinalProject/code/processed_tweets.csv")
+avg_hf_score = trump_tweets['hf_score'].mean()
+print(avg_hf_score)
+# calculating abs value to see if sentiment in general correlates to more
+trump_tweets['abs_sentiment_score'] = trump_tweets['hf_score'].abs()
+abs_hf_score = trump_tweets['abs_sentiment_score'].mean()
+print(abs_hf_score)
+
+trump_tweets = pd.read_csv("/Users/anjalinuggehalli/Desktop/NLP/NLP_FinalProject/code/trumptweets/trumptweets.csv")
 trump_tweets = trump_tweets[['content', 'retweets', 'favorites']]
 
 # adds compound sentiment score for each tweet
