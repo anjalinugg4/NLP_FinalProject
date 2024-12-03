@@ -3,6 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 import numpy as np
+from scipy.stats import pearsonr
+
 
 # Argument parser to accept file path
 parser = argparse.ArgumentParser(description="Plot sentiment scores vs. retweets.")
@@ -142,7 +144,6 @@ plt.show()
 
 
 # Plot 6: Linear Regression Vader vs. Weighted Engagement
-
 X = trump_tweets['vader_score'].values.reshape(-1, 1)  # Independent variable
 y = trump_tweets['weighted_engagement'].values  # Dependent variable
 
@@ -163,3 +164,26 @@ plt.ylabel('Weighted Engagement')
 plt.grid(True, linestyle='--', alpha=0.6)
 plt.legend()
 plt.show()
+
+# Plot 7: Linear Regression Combined Score vs. Weighted Engagement
+X_avg = trump_tweets['abs_vader_hf_score'].values.reshape(-1, 1)
+y = trump_tweets['weighted_engagement'].values
+
+reg_model_avg = LinearRegression()
+reg_model_avg.fit(X_avg, y)
+
+y_pred_avg = reg_model_avg.predict(X_avg)
+
+avg_corr, avg_p_value = pearsonr(trump_tweets['abs_vader_hf_score'], trump_tweets['weighted_engagement'])
+print(f"Absolute Average Sentiment Score Correlation: {avg_corr:.2f}, P-value: {avg_p_value:.4f}")
+
+plt.figure(figsize=(8, 6))
+plt.scatter(trump_tweets['abs_vader_hf_score'], y, alpha=0.5, color='blue', label='Data Points')
+plt.plot(trump_tweets['abs_vader_hf_score'], y_pred_avg, color='red', label='Regression Line')
+plt.title('Linear Regression: Absolute Average Sentiment Score vs. Weighted Engagement', fontsize=14)
+plt.xlabel('Absolute Average Sentiment Score')
+plt.ylabel('Weighted Engagement')
+plt.grid(True, linestyle='--', alpha=0.6)
+plt.legend()
+plt.show()
+
