@@ -1,6 +1,7 @@
 import argparse
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
 import numpy as np
 
 # Argument parser to accept file path
@@ -137,4 +138,28 @@ plt.ylabel('Average Weighted Engagement')
 plt.grid(axis='y', linestyle='--', alpha=0.6)
 plt.xticks(rotation=45, ha='right')
 plt.tight_layout()
+plt.show()
+
+
+# Plot 6: Linear Regression Vader vs. Weighted Engagement
+
+X = trump_tweets['vader_score'].values.reshape(-1, 1)  # Independent variable
+y = trump_tweets['weighted_engagement'].values  # Dependent variable
+
+# Fit the model
+reg_model = LinearRegression()
+reg_model.fit(X, y)
+
+
+y_pred = reg_model.predict(X)
+
+
+plt.figure(figsize=(8, 6))
+plt.scatter(X, y, alpha=0.5, color='blue', label='Data Points')
+plt.plot(X, y_pred, color='red', label='Regression Line')
+plt.title('Linear Regression: Vader Score vs. Weighted Engagement', fontsize=14)
+plt.xlabel('Vader Sentiment Score')
+plt.ylabel('Weighted Engagement')
+plt.grid(True, linestyle='--', alpha=0.6)
+plt.legend()
 plt.show()
