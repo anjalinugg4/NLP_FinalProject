@@ -23,6 +23,10 @@ trump_tweets['abs_hf_score'] = trump_tweets['hf_score'].abs()
 # Create a new column for the absolut value of the Vader score
 trump_tweets['abs_vader_score'] = trump_tweets['vader_score'].abs()
 
+trump_tweets['vader_hf_score'] =  (trump_tweets['vader_score'] + trump_tweets['hf_score']) / 2
+
+trump_tweets['abs_vader_hf_score'] =  (trump_tweets['vader_score'].abs() + trump_tweets['hf_score'].abs()) / 2
+
 # Scatter Plots
 
 # # Plot 1: Vader Sentiment Score vs Weighted Engagement
@@ -57,12 +61,17 @@ vader_bins = pd.cut(trump_tweets['vader_score'], bins=np.linspace(-1, 1, 11))
 hf_bins = pd.cut(trump_tweets['hf_score'], bins=np.linspace(-1, 1, 11))       
 abs_hf_bins = pd.cut(trump_tweets['abs_hf_score'], bins=np.linspace(0.5, 1, 11))
 abs_vader_bins = pd.cut(trump_tweets['abs_vader_score'], bins=np.linspace(0, 1, 11)) 
+vader_hf_bins = pd.cut(trump_tweets['vader_hf_score'], bins=np.linspace(-1, 1, 11)) 
+abs_vader_hf_bins = pd.cut(trump_tweets['abs_vader_hf_score'], bins=np.linspace(0, 1, 11)) 
+
 
 # Compute average weighted engagement for each bin
 vader_avg_engagement = trump_tweets.groupby(vader_bins)['weighted_engagement'].mean()
 hf_avg_engagement = trump_tweets.groupby(hf_bins)['weighted_engagement'].mean()
 abs_hf_avg_engagement = trump_tweets.groupby(abs_hf_bins)['weighted_engagement'].mean()
 abs_vader_avg_engagement = trump_tweets.groupby(abs_vader_bins)['weighted_engagement'].mean()
+vader_hf_avg_engagement = trump_tweets.groupby(vader_hf_bins)['weighted_engagement'].mean()
+abs_vader_hf_avg_engagement = trump_tweets.groupby(abs_vader_hf_bins)['weighted_engagement'].mean()
 
 # Plot 1: Vader Sentiment Score vs Weighted Engagement (Bar Graph)
 plt.figure(figsize=(8, 6))
@@ -102,6 +111,28 @@ plt.figure(figsize=(8, 6))
 abs_hf_avg_engagement.plot(kind='bar', color='red', alpha=0.7, width=0.7)
 plt.title('Absolute Hugging Face Sentiment Score vs. Weighted Engagement (Bar Graph)', fontsize=14)
 plt.xlabel('Absolute Hugging Face Sentiment Score')
+plt.ylabel('Average Weighted Engagement')
+plt.grid(axis='y', linestyle='--', alpha=0.6)
+plt.xticks(rotation=45, ha='right')
+plt.tight_layout()
+plt.show()
+
+# Plot 5: Vader and Hugging Face Sentiment Score vs Weighted Engagement (Bar Graph)
+plt.figure(figsize=(8, 6))
+vader_hf_avg_engagement.plot(kind='bar', color='teal', alpha=0.7, width=0.7)
+plt.title('Average Vader and Hugging Face Sentiment Score vs. Weighted Engagement', fontsize=14)
+plt.xlabel('Average Vader and Hugging Face Sentiment Score')
+plt.ylabel('Average Weighted Engagement')
+plt.grid(axis='y', linestyle='--', alpha=0.6)
+plt.xticks(rotation=45, ha='right')
+plt.tight_layout()
+plt.show()
+
+# Plot 5: Absolute Vader and Hugging Face Sentiment Score vs Weighted Engagement (Bar Graph)
+plt.figure(figsize=(8, 6))
+abs_vader_hf_avg_engagement.plot(kind='bar', color='orange', alpha=0.7, width=0.7)
+plt.title('Absolute Average Vader and Hugging Face Sentiment Score vs. Weighted Engagement', fontsize=14)
+plt.xlabel('Absolute Average Vader and Hugging Face Sentiment Score')
 plt.ylabel('Average Weighted Engagement')
 plt.grid(axis='y', linestyle='--', alpha=0.6)
 plt.xticks(rotation=45, ha='right')
